@@ -1,9 +1,11 @@
 import {Scene, PerspectiveCamera, WebGLRenderer, Clock} from "three";
+import {update} from "@tweenjs/tween.js";
 import style from "./index.module.css";
 
 var aspect_ratio = window.innerWidth / window.innerHeight;
 var camera = new PerspectiveCamera(75, aspect_ratio, 1, 10000);
 camera.position.z = 500;
+//camera.rotation.z = Math.PI / 4;
 
 var renderer = new WebGLRenderer({alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -12,33 +14,26 @@ canvas.className = style.threeCanvas;
 
 var scene = new Scene();
 
-var clock = new Clock();
-const TARGETFRAMERATE = 1/60;
-const reducer = (accumulator, currentValue) => accumulator + currentValue;
-var frameRate = {
-    lastFrameTime: TARGETFRAMERATE,
-    lastFrames: new Array(10).fill(TARGETFRAMERATE),
-    averageFrameTime: TARGETFRAMERATE,
-    index: 0,
-    multiplier: 1
-}
+//var clock = new Clock();
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    
-    var elapsed = clock.getDelta();
-    frameRate.lastFrameTime = elapsed;
-    frameRate.lastFrames[frameRate.index] = elapsed;
-    frameRate.index = (frameRate.index + 1) % frameRate.lastFrames.length;
-    frameRate.averageFrameTime = frameRate.lastFrames.reduce(reducer) / 
-                                 frameRate.lastFrames.length;
-    frameRate.multiplier = frameRate.averageFrameTime / TARGETFRAMERATE;
-
-    for (var f of updateHandlers) {
-        f();
-    }
+    update(/*clock.getElapsedTime()*/);
 }
-var updateHandlers = [];
 animate();
 
-export {canvas, frameRate, scene, updateHandlers};
+function destroy(obj) {
+    scene.remove(obj);
+    if (obj.children) {
+        for (var child of obj.children) {
+            destroy(child);
+        }
+    }
+    if (obj.material) obj.material.dispose();
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.texture) obj.texture.dispose();
+    
+    //might as well just iterate the obj and try to dispose of everything
+}
+
+export {canvas, scene, destroy};

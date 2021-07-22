@@ -1,74 +1,80 @@
 import {
-    Clock,     
     MeshBasicMaterial, 
     Mesh,
     BoxGeometry
 } from "three";
+import {Tween, Easing} from "@tweenjs/tween.js";
+import {scene, destroy} from "./scene";
 
-//I don't want to mess up my framerate calculations
-const clock = new Clock();
+const MAXDIST = 2000;
+const MAXROT = Math.PI * 2 * 3;
+const TIME = 3000;
+const EASING = Easing.Linear.None;
+const DELAY = 725;
 
-class animationConnector {
-    constructor(obj, clock, frameRate) {
-        this.obj = obj;
-        this.clock = clock;
-        this.controller = frameRate;
-        this.targets = [];
+const FALLEND = -6000;
+const FALLTIME = 15000;
+
+function rand(abs) {
+    // returns a value between -abs/2 and abs/2
+    return Math.random() * abs - abs/2;
+}
+
+function createTranslation(start, amount, easing, time) {
+    const stop = {
+        x: rand(amount) + start.x,
+        y: rand(amount) + start.y,
+        z: rand(amount) + start.z,
     }
+    new Tween(start)
+        .to(stop, TIME)
+        .easing(EASING)
+        .start();
+}
+
+function explode(obj, remove) {
+    createTranslation(obj.position, MAXDIST, EASING, TIME);
+    createTranslation(obj.rotation, MAXROT, EASING, TIME);
     
-    cubes() {
-        var cubes = [];
-        for (var i = 0; i < 50; i++) {
+    var mat = obj.material ? obj.material : obj.children[0].material;
+    new Tween(mat)
+        .to({opacity: 0}, TIME)
+        .easing(EASING)
+        .start();
+    
+    if (remove) setTimeout(() => destroy(obj), TIME);
+}
+
+function detonationAnimation(obj) {
+    var originalChildren = [...obj.children];
+    
+    for (var i = 0; i < 50; i++) {
             let cover = new MeshBasicMaterial({transparent: true, color: "rgb(255, "+ Math.floor(Math.random() * 255)+ ", 0)"});
             let shape = new BoxGeometry(50, 50, 50);
             let cube = new Mesh(shape, cover);
             
-            this.obj.add(cube);
-            cubes.push(cube);
-        }
-        
-        this.startExploding(cubes, 10);
-        console.log(this.targets);
-        setTimeout(() => {
-            this.startExploding(this.obj.children, 3);
-        }, 1500);
+            obj.add(cube);
+            
+            explode(cube, true);
     }
     
-    startExploding(targets, MAX) {
-        for (let target of targets) {
-            let coeffX = Math.random() * MAX - MAX/2;
-            let coeffY = Math.random() * MAX - MAX/2;
-            let coeffZ = Math.random() * MAX - MAX/2;
-            
-            let rotCoeffX = Math.random() * MAX - MAX/2;
-            let rotCoeffY = Math.random() * MAX - MAX/2;
-            let rotCoeffZ = Math.random() * MAX - MAX/2;
-            
-            this.targets.push(function(multiplier, elapsed) {
-                try {
-                    target.children[0].material.opacity = 
-                        target.children[0].material.opacity / 1.00125 - 0.0005;
-                } catch {
-                    target.material.opacity = 
-                        target.material.opacity / 1.0025 - 0.0005;
-                }
-                target.position.x += elapsed * coeffX * multiplier;
-                target.position.y += elapsed * coeffY * multiplier;
-                target.position.z += elapsed * coeffZ * multiplier;
-                
-                target.rotation.x = Math.PI * elapsed * rotCoeffX * multiplier;
-                target.rotation.y = Math.PI * elapsed * rotCoeffY * multiplier;
-                target.rotation.z = Math.PI * elapsed * rotCoeffZ * multiplier;
-            });
+    setTimeout(() => {
+        for (var child of originalChildren) {
+            explode(child, true);
         }
-    }
-    
-    animate() {
-        var elapsed = this.clock.getElapsedTime();
-        for (var target of this.targets) {
-            target(this.controller.multiplier, elapsed);
-        }
-    }
+    }, DELAY);
 }
 
-export {clock, animationConnector};
+function fall(obj) {
+    new Tween(obj.position)
+        .to({y: FALLEND}, FALLTIME)
+        .easing(EASING)
+        .start();
+}
+
+function wordsearchAnimation(obj) {
+    fall(obj);
+    setTimeout(() => detonationAnimation(obj), Math.random() * (FALLTIME/2))
+}
+
+export {wordsearchAnimation, fall, detonationAnimation};
