@@ -4,16 +4,19 @@ import {
     BoxGeometry
 } from "three";
 import {Tween, Easing} from "@tweenjs/tween.js";
-import {scene, destroy} from "./scene";
+import {destroy, camera} from "./scene";
 
-const MAXDIST = 2000;
+//Explosion
+const MAXDIST = 4000;
 const MAXROT = Math.PI * 2 * 3;
-const TIME = 3000;
+const TIME = 1500;
 const EASING = Easing.Linear.None;
-const DELAY = 725;
+const DELAY = 242;
 
-const FALLEND = -6000;
+//Falling
+const FALLEND = -8000;
 const FALLTIME = 15000;
+const MAXEXPLODEDELAY = 10000;
 
 function rand(abs) {
     // returns a value between -abs/2 and abs/2
@@ -74,7 +77,14 @@ function fall(obj) {
 
 function wordsearchAnimation(obj) {
     fall(obj);
-    setTimeout(() => detonationAnimation(obj), Math.random() * (FALLTIME/2))
+    setTimeout(() => detonationAnimation(obj), Math.random() * MAXEXPLODEDELAY);
 }
 
-export {wordsearchAnimation, fall, detonationAnimation};
+
+function rotateCameraAnimation() {
+    new Tween(camera.rotation)
+        .to({z: Math.PI / 4}, 1500)
+        .easing(EASING)
+        .start();
+}
+export {wordsearchAnimation, rotateCameraAnimation};

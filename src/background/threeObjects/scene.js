@@ -1,11 +1,17 @@
-import {Scene, PerspectiveCamera, WebGLRenderer, Clock} from "three";
+import {
+    Scene, 
+    PerspectiveCamera, 
+    WebGLRenderer,
+    Vector2,
+    Box2
+} from "three";
 import {update} from "@tweenjs/tween.js";
 import style from "./index.module.css";
 
 var aspect_ratio = window.innerWidth / window.innerHeight;
 var camera = new PerspectiveCamera(75, aspect_ratio, 1, 10000);
-camera.position.z = 500;
-//camera.rotation.z = Math.PI / 4;
+camera.position.z = -500;
+//camera.rotation.z = - Math.PI / 4;
 
 var renderer = new WebGLRenderer({alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -17,8 +23,8 @@ var scene = new Scene();
 //var clock = new Clock();
 function animate() {
     requestAnimationFrame(animate);
-    renderer.render(scene, camera);
     update(/*clock.getElapsedTime()*/);
+    renderer.render(scene, camera);
 }
 animate();
 
@@ -36,4 +42,12 @@ function destroy(obj) {
     //might as well just iterate the obj and try to dispose of everything
 }
 
-export {canvas, scene, destroy};
+function visibleBox(z) {
+    var t = Math.tan((camera.fov / 2) * (Math.PI / 180));
+    var h = t * z;
+    var w = h * camera.aspect;
+
+    return new Box2(new Vector2(-w, h), new Vector2(w, -h));
+}
+
+export {canvas, scene, destroy, visibleBox, camera};
