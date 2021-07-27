@@ -1,39 +1,32 @@
-import {
-    Object3D,
-    MeshBasicMaterial, 
-    Mesh,
-    BoxGeometry,
-    Box3
-} from "three";
-import {scene, visibleBox, camera} from "./scene";
-export {canvas} from "./scene";
-
-var cover = new MeshBasicMaterial();
-var shape = new BoxGeometry(50,50,50);
-var cube = new Mesh(shape, cover);
-    
-scene.add(cube);
-
-async function update() {
-    for (var z = 0; z < 9500; z += 5) {
-        cube.position.z = -z;
-        var visBox = visibleBox(z);
-        cube.position.x = visBox.min.x;
-        cube.position.y = visBox.min.y;
-    }
-}
-
-update();
-/*
 import {scene, visibleBox, camera} from "./scene";
 import {makeGrid} from "./grid";
 import {wordsearchAnimation} from "./animation";
+//import {Frustum, Matrix4} from "three";
 export {canvas} from "./scene";
+/*
+camera.updateMatrix(); // make sure camera's local matrix is updated
+camera.updateMatrixWorld(); // make sure camera's world matrix is updated
+camera.matrixWorldInverse.getInverse( camera.matrixWorld );
 
+var frustum = new Frustum();
+frustum.setFromMatrix( new Matrix4().multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse ) );
+
+console.log(camera);
+debugger;
+*/
 const LETTERS = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'L', 'K', 'J', 'H', 'G', 'F', 'D', 'S', 'A', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
 function randBetween(min, max) {
     return Math.random() * (max - min) + min;
+}
+
+const MAXDIST = 4000;
+const MINDIST = 2000;
+
+function calcMaxXY(dist) {
+    const Y = Math.tan((camera.fov / 2) * (Math.PI / 180)) * dist;
+    const X = camera.aspect * Y;
+    return {x: X, y: Y};
 }
 
 function gridMaker() {
@@ -50,11 +43,10 @@ function gridMaker() {
     var grid = makeGrid(g);
     
     
-    grid.position.z = -randBetween(camera.near + 1500, camera.far);
-    
-    var visBox = visibleBox(-grid.position.z);
-    grid.position.x = randBetween(visBox.min.x, visBox.max.x) / 2;
-    grid.position.y = visBox.min.y / 2;
+    grid.position.z = -randBetween(MINDIST, MAXDIST);
+    var maxDists = calcMaxXY(-grid.position.z);
+    grid.position.x = randBetween(-maxDists.x, maxDists.x);
+    grid.position.y = maxDists.y;
     
     console.log(grid.position);
     
@@ -64,4 +56,3 @@ function gridMaker() {
 
 gridMaker();
 setInterval(() => gridMaker(), 2000);
-*/
