@@ -4,7 +4,8 @@ import {
     MeshNormalMaterial, 
     Mesh,
     BoxGeometry,
-    Box3
+    Box3,
+    MeshBasicMaterial
 } from "three";
 
 const SIZE = 100;
@@ -27,7 +28,7 @@ function makeGrid(letters) {
     }
     
     frame(grid);
-    
+    cubes(grid);
     return grid;
 }
 
@@ -78,6 +79,17 @@ function frame(obj) {
     side.position.y = -dim.height / 2 - FRAMEWIDTH*2;
 
     obj.add(side);    
+}
+
+function cubes(grid) {
+    for (var i = 0; i < 50; i++) {
+        let cover = new MeshBasicMaterial({transparent: true, color: "rgb(255, "+ Math.floor(Math.random() * 255)+ ", 0)"});
+        let shape = new BoxGeometry(50, 50, 50);
+        let cube = new Mesh(shape, cover);
+        cube.name = "cube";
+        cube.visible = false;
+        grid.add(cube);
+    }
 }
 
 export {makeGrid};

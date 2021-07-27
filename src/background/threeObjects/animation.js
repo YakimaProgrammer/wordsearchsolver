@@ -1,17 +1,12 @@
-import {
-    MeshBasicMaterial, 
-    Mesh,
-    BoxGeometry
-} from "three";
 import {Tween, Easing} from "@tweenjs/tween.js";
 import {destroy, camera} from "./scene";
 
 //Explosion
 const MAXDIST = 4000;
 const MAXROT = Math.PI * 2 * 3;
-const TIME = 1500;
+const TIME = 2500;
 const EASING = Easing.Linear.None;
-const DELAY = 242;
+const DELAY = 403;
 
 //Falling
 const FALLTIME = 5000;
@@ -48,21 +43,19 @@ function explode(obj, remove) {
 }
 
 function detonationAnimation(obj) {
-    var originalChildren = [...obj.children];
-    
-    for (var i = 0; i < 50; i++) {
-            let cover = new MeshBasicMaterial({transparent: true, color: "rgb(255, "+ Math.floor(Math.random() * 255)+ ", 0)"});
-            let shape = new BoxGeometry(50, 50, 50);
-            let cube = new Mesh(shape, cover);
-            
-            obj.add(cube);
-            
-            explode(cube, true);
+    for (var child of obj.children) {
+        if (child.name === "cube") {
+            child.visible = true;
+            explode(child, true);
+        }
     }
     
+    
     setTimeout(() => {
-        for (var child of originalChildren) {
-            explode(child, true);
+        for (var child of obj.children) {
+            if (child.name !== "cube") {
+                explode(child, true);
+            }
         }
     }, DELAY);
 }
@@ -74,15 +67,16 @@ function fall(obj, end) {
         .start();
 }
 
-function wordsearchAnimation(obj, end) {
+function wordsearchAnimation(obj, end, doneCallback) {
     fall(obj, end);
     setTimeout(() => detonationAnimation(obj), Math.random() * MAXEXPLODEDELAY);
+    setTimeout(doneCallback, FALLTIME);
 }
 
 
 function rotateCameraAnimation() {
     new Tween(camera.rotation)
-        .to({z: Math.PI / 4}, 1500)
+        .to({z: Math.PI / 8}, 750)
         .easing(EASING)
         .start();
 }
