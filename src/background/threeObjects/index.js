@@ -1,6 +1,7 @@
 import {scene, camera} from "./scene";
 import {makeGrid} from "./grid";
 import {wordsearchAnimation} from "./animation";
+import {Allocator, ResetableGrid} from "./tracker";
 export {canvas} from "./scene";
 
 const LETTERS = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'L', 'K', 'J', 'H', 'G', 'F', 'D', 'S', 'A', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
@@ -29,19 +30,25 @@ function gridMaker() {
             LETTERS[Math.floor(Math.random() * 26)]
             ]);
     }
-    var grid = makeGrid(g);
     
+    return new ResetableGrid(makeGrid(g));
+}
+
+var allocator = new Allocator(() => gridMaker());
+
+function gridAnimation() {
+    var gridTracker = allocator.allocate();
+    gridTracker.restore();
+    
+    var grid = gridTracker.getGrid();
     
     grid.position.z = -randBetween(MINDIST, MAXDIST);
     var maxDists = calcMaxXY(-grid.position.z);
     grid.position.x = randBetween(-maxDists.x, maxDists.x);
     grid.position.y = maxDists.y;
     
-    console.log(grid.position);
-    
     scene.add(grid);
-    wordsearchAnimation(grid, -maxDists.y);
+    wordsearchAnimation(grid, -maxDists.y, () => allocator.deallocate(gridTracker));
 }
 
-gridMaker();
-setInterval(() => gridMaker(), 2000);
+setInterval(() => gridAnimation(), 2000);
