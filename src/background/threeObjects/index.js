@@ -1,4 +1,4 @@
-import {scene, visibleBox, camera} from "./scene";
+import {scene, camera} from "./scene";
 import {makeGrid} from "./grid";
 import {wordsearchAnimation} from "./animation";
 export {canvas} from "./scene";
