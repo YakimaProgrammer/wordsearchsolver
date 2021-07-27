@@ -14,9 +14,8 @@ const EASING = Easing.Linear.None;
 const DELAY = 242;
 
 //Falling
-const FALLEND = -8000;
-const FALLTIME = 15000;
-const MAXEXPLODEDELAY = 10000;
+const FALLTIME = 5000;
+const MAXEXPLODEDELAY = 3500;
 
 function rand(abs) {
     // returns a value between -abs/2 and abs/2
@@ -68,15 +67,15 @@ function detonationAnimation(obj) {
     }, DELAY);
 }
 
-function fall(obj) {
+function fall(obj, end) {
     new Tween(obj.position)
-        .to({y: FALLEND}, FALLTIME)
+        .to({y: end}, FALLTIME)
         .easing(EASING)
         .start();
 }
 
-function wordsearchAnimation(obj) {
-    fall(obj);
+function wordsearchAnimation(obj, end) {
+    fall(obj, end);
     setTimeout(() => detonationAnimation(obj), Math.random() * MAXEXPLODEDELAY);
 }
 
