@@ -3,7 +3,7 @@ import {
     PerspectiveCamera, 
     WebGLRenderer
 } from "three";
-import {update} from "@tweenjs/tween.js";
+import { update } from "@tweenjs/tween.js";
 import style from "./index.module.css";
 
 var aspect_ratio = window.innerWidth / window.innerHeight;
@@ -13,7 +13,7 @@ camera.position.z = -500;
 var renderer = new WebGLRenderer({alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 var canvas = renderer.domElement;
-canvas.className = style.threeCanvas;
+canvas.classList.add(style.threeCanvas);
 
 var scene = new Scene();
 

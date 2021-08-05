@@ -2,7 +2,7 @@ import {scene, camera} from "./scene";
 import {makeGrid} from "./grid";
 import {wordsearchAnimation} from "./animation";
 import {Allocator, ResetableGrid} from "./tracker";
-export {canvas} from "./scene";
+export { canvas } from "./scene";
 
 const LETTERS = ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'L', 'K', 'J', 'H', 'G', 'F', 'D', 'S', 'A', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'];
 
