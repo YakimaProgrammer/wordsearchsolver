@@ -5,7 +5,7 @@ import ToggleSwitch from "react-switch";
 function HomepageComponent(props) {
     return (
         <div>
-            <h1 className={style.heading}>Word Search solver</h1>
+            <h1 className={style.heading}>Word Search Solver</h1>
             <h2 className={style.subtitle}>Solve any word search from just a picture</h2>
             <button className={style.startbutton}>Get started!</button>
             <label className={style.toggleSwitch}>
