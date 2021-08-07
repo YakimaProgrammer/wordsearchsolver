@@ -1,7 +1,10 @@
 import { Homepage } from "../Homepage";
+import style from "./index.module.css";
 
 export function App(props) {
     return (
-        <Homepage />
+        <div className={style.spa}>
+            <Homepage />
+        </div>
     );
 }

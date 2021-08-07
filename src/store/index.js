@@ -1,5 +1,6 @@
 import { createStore } from "redux";
 import { rotateCameraAnimation } from "../background/threeObjects/animation";
+import { enableAnimation, disableAnimation } from "../background/threeObjects/scene";
 
 //Gotta scope your localStorage keys, right?
 const KEY = "wordsearch.animatedBackground";
@@ -52,8 +53,19 @@ function reducer(state, action) {
 //This is probably bad practice.
 export var store = createStore(reducer);
 
-//let's keep this in sync with localStorage!
-store.subscribe(() => setStorageValue(store.getState().backgroundIsAnimated));
+store.subscribe(() => {
+    const backgroundIsAnimated = store.getState().backgroundIsAnimated;
+    
+    //Let's keep this in sync with localStorage!
+    setStorageValue(backgroundIsAnimated);
+    
+    //Now let's make sure the switch actually does something!
+    if (backgroundIsAnimated) {
+        enableAnimation();
+    } else {
+        disableAnimation();
+    }
+});
     
 //And another for good measure!
 //I'm not sure where else this could logically fit in...
@@ -61,17 +73,19 @@ store.subscribe(() => {
     const currentPage = store.getState().currentPage;
     
     switch (currentPage) {
-        case 0:
+        case 1:
             rotateCameraAnimation({z: Math.PI / 8});
             break;
         
-        case 1:
+        case 2:
             rotateCameraAnimation({z: -Math.PI / 8});
             break;
             
-        case 2:
+        /* 
+        case 3:
             rotateCameraAnimation({z: -Math.PI});
             break;
+        */
             
         default:
             rotateCameraAnimation({z: 0});
