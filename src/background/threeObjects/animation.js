@@ -74,9 +74,9 @@ function wordsearchAnimation(obj, end, doneCallback) {
 }
 
 
-function rotateCameraAnimation() {
+function rotateCameraAnimation(newRot) {
     new Tween(camera.rotation)
-        .to({z: Math.PI / 8}, 750)
+        .to(newRot, 750)
         .easing(EASING)
         .start();
 }

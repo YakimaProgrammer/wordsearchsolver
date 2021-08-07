@@ -1,0 +1,26 @@
+.heading, .subtitle, .startbutton {
+    text-align: center;   
+}
+
+.startbutton {
+    margin: 0 auto;
+    display: block;
+}
+
+.toggleSwitch {
+    position: absolute;
+    bottom: 25px;
+    right: 25px;
+    opacity: 50%;
+    transition: opacity 0.5s ease;
+    cursor: pointer;
+}
+
+.toggleSwitch:hover {
+    opacity: 100;
+}
+
+.toggleSwitch > span, .toggleSwitch > div {
+    display:inline-block; 
+    vertical-align: middle;   
+}

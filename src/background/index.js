@@ -1,10 +1,11 @@
-import {Component} from "react";
-import {canvas} from "./threeObjects";
-import {rotateCameraAnimation} from "./threeObjects/animation";
+import { Component } from "react";
+//things work out when you export this from threeObjects/index.js and then import it here 
+import { canvas } from "./threeObjects";
+
 export class AnimatedBackground extends Component {
     render() {
         return (
-            <div ref={ref => (this.mount = ref)} onClick={rotateCameraAnimation}></div>
+            <div ref={ref => (this.mount = ref)}></div>
         );
     }
     

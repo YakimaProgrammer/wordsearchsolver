@@ -1,2 +1,13 @@
 .threeCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 50%;
+    transition: opacity 1.5s ease;
+    
+    z-index: 1;
+}
+
+.hidden {
+    opacity: 0;   
 }

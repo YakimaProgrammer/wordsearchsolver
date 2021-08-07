@@ -3,7 +3,8 @@ import {
     PerspectiveCamera, 
     WebGLRenderer
 } from "three";
-import {update} from "@tweenjs/tween.js";
+import { update } from "@tweenjs/tween.js";
+import { store } from "../../store";
 import style from "./index.module.css";
 
 var aspect_ratio = window.innerWidth / window.innerHeight;
@@ -13,16 +14,30 @@ camera.position.z = -500;
 var renderer = new WebGLRenderer({alpha: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
 var canvas = renderer.domElement;
-canvas.className = style.threeCanvas;
+canvas.classList.add(style.threeCanvas);
 
 var scene = new Scene();
 
+var scheduledAnimationFrameId;
+
 function animate() {
-    requestAnimationFrame(animate);
+    scheduledAnimationFrameId = requestAnimationFrame(animate);
     update();
     renderer.render(scene, camera);
 }
-animate();
+
+if (store.getState().backgroundIsAnimated) animate();
+
+function enableAnimation() {
+    canvas.classList.remove(style.hidden);
+    animate();
+}
+
+function disableAnimation() {
+    canvas.classList.add(style.hidden);
+    setTimeout(() => cancelAnimationFrame(scheduledAnimationFrameId), 1500);
+}
+
 
 function destroy(obj) {
     scene.remove(obj);
@@ -36,4 +51,4 @@ function destroy(obj) {
     if (obj.texture) obj.texture.dispose();
  }
 
-export {canvas, scene, destroy, camera};
+export {canvas, scene, destroy, camera, enableAnimation, disableAnimation};

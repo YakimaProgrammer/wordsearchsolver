@@ -1,0 +1,7 @@
+.spa {
+    /* I kinda have to hack this a little bit, otherwise the canvas will try to cover everything */
+    z-index: 2;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+}
