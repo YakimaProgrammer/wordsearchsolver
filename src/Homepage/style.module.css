@@ -8,12 +8,12 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
+
     /* styling */
     padding: 15px 50px 15px 50px;
     border-radius: 5px;
     border: none;
-    background: linear-gradient(90deg, #ed2f9e, 0, #ed2f9e, 100%);
+    background-color: #4ff0dd; 
     color: white;
     font-size: 16px;
     font-weight: bold;
@@ -25,9 +25,30 @@
     padding: 25px 60px 25px 60px;
     border-radius: 15px;
     font-size: 24px;
-    
-    background: linear-gradient(133deg, rgba(46,231,153,1) 41%, rgba(0,212,255,1) 100%);
+    background-color: transparent;
 }
+
+/* inspired by https://stackoverflow.com/a/48586471 */
+.startbutton:before {
+    border-radius: inherit;   
+    display: block;
+    width: 100%;
+    height: 100%;
+    content: '';
+    position: absolute;
+    top: 0; 
+    left: 0;
+	background: linear-gradient(135deg, #21d4fd 25%, #b721ff 75%);
+	z-index: -1;
+    
+    transition: opacity .25s;
+    opacity: 0;
+}
+
+.startbutton:hover:before {
+    opacity: 100%;
+}
+
 
 .toggleSwitch {
     position: absolute;
