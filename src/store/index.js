@@ -50,9 +50,10 @@ function reducer(state, action) {
 }
 
 //What, you mean OTHER people might want to use this variable?
-//This is probably bad practice.
 export var store = createStore(reducer);
 
+//This is probably not how you should do this
+//I *could* merge this into the AnimatedBackground component, but I can't think of a logical way to do that
 store.subscribe(() => {
     const backgroundIsAnimated = store.getState().backgroundIsAnimated;
     

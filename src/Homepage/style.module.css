@@ -2,11 +2,6 @@
     text-align: center;   
 }
 
-.startbutton {
-    margin: 0 auto;
-    display: block;
-}
-
 .toggleSwitch {
     position: absolute;
     bottom: 25px;
