@@ -1,14 +1,17 @@
 import { connect } from "react-redux";
-import { FancyButton } from "../FancyButton";
+import { SimplePage } from "../SimplePage";
 import style from "./style.module.css";
 import ToggleSwitch from "react-switch";
 
 function HomepageComponent(props) {
     return (
-        <div>
-            <h1 className={style.heading}>Word Search Solver</h1>
-            <h2 className={style.subtitle}>Solve any word search from just a picture</h2>
-            <FancyButton onClick={props.nextPage} centerOnPage={true}>Get Started!</FancyButton>
+        <SimplePage
+            title="Word Search Solver"
+            subtitle="Solve any word search from just a picture"
+            buttonText="Get Started!"
+            onButtonClick={props.nextPage}
+            showButton={true}
+        >
             <label className={style.toggleSwitch}>
                 <span>Animated background &nbsp;</span>
                 <ToggleSwitch 
@@ -18,8 +21,8 @@ function HomepageComponent(props) {
                     onChange={props.updateBackgroundState.bind(null)}
                 />
             </label>
-        </div>
-    );
+        </SimplePage>
+    )
 }
 
 function mapStateToProps(state) {
