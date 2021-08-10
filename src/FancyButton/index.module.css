@@ -1,0 +1,48 @@
+.fancyButton {
+    padding: 15px 50px 15px 50px;
+    border-radius: 5px;
+    border: none;
+    background-color: #4ff0dd; 
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    
+    transition: all 0.25s ease;
+}
+
+.fancyButton:hover {
+    padding: 25px 60px 25px 60px;
+    border-radius: 15px;
+    font-size: 24px;
+    background-color: transparent;
+}
+
+/* inspired by https://stackoverflow.com/a/48586471 */
+.fancyButton:before {
+    border-radius: inherit;   
+    display: block;
+    width: 100%;
+    height: 100%;
+    content: '';
+    position: absolute;
+    top: 0; 
+    left: 0;
+	background: linear-gradient(135deg, #21d4fd 25%, #b721ff 75%);
+	z-index: -1;
+    
+    transition: opacity .25s;
+    opacity: 0;
+}
+
+.fancyButton:hover:before {
+    opacity: 100%;
+}
+
+
+.centerOnPage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
