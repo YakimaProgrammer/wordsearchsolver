@@ -1,5 +1,6 @@
 import { Homepage } from "../Homepage";
 import { UploadPage } from "../UploadPage";
+import { ProcessingPage } from "../ProcessingPage";
 import { connect } from "react-redux";
 
 import style from "./index.module.css";
@@ -10,6 +11,10 @@ function AppComponent(props) {
     switch (props.currentPage) {
         case 1:
             activeComponent = <UploadPage />;
+            break;
+            
+        case 2:
+            activeComponent = <ProcessingPage />;
             break;
         
         default:
