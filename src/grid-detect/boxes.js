@@ -32,14 +32,6 @@ class Line {
     }
 }
 
-class DefaultDict {
-    constructor(factoryFunc) {
-        return new Proxy({}, {
-            get: (target, name) => name in target ? target[name] : target[name] = factoryFunc()
-        });
-    }
-}
-
 function identity(x) { return x };
 const NOEXCLUDE = new Set();
 
