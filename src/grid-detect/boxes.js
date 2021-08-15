@@ -32,10 +32,6 @@ class Line {
     }
 }
 
-function identity(x) {
-    return x;   
-}
-
 function getMode(array) {
     var frequencies = {};
     var maxFreq = 0;
@@ -57,10 +53,6 @@ function getMode(array) {
     
     return maxFreqElement;
     
-}
-
-function byArrayLength(x) {
-    return x.length;   
 }
 
 function connectBoxes(boxes) {
