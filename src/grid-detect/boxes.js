@@ -32,19 +32,48 @@ class Line {
     }
 }
 
+class DefaultDict {
+    constructor(factoryFunc) {
+        return new Proxy({}, {
+            get: (target, name) => name in target ? target[name] : target[name] = factoryFunc()
+        });
+    }
+}
+
 function identity(x) { return x };
 const NOEXCLUDE = new Set();
 
-const EXCLUDESLOPES = new Set([0,1]);
+const EXCLUDEINTERSECTCOUNT = new Set([0,1]);
 function intersectionKey(x) { return x.intersectCount };
 
-function getMode(elements, keyFunc=identity, exclude=NOEXCLUDE) {
+function slopeKey(x) { return x.key };
+
+const MAXDIFFERENCE = 1/250;
+function areApproximatelyEqual(num1, num2, maxdiff=MAXDIFFERENCE) {
+    return Math.abs(num1 - num2) < maxdiff;   
+}
+
+
+//Well, for a while I was O(n). Now I'm O(n**2), I think.
+function getMode(elements, keyFunc, exclude, equityCheckFunc) {
+    if (!keyFunc) keyFunc = identity;
+    if (!exclude) exclude = NOEXCLUDE;
+    
     var frequencies = {};
     var maxFreq = 0;
     var maxFreqKey = null;
     
     for (var element of elements) {
-       let key = keyFunc(element);
+        let key = keyFunc(element);
+        
+        if (!!equityCheckFunc) {
+            for (let knownKey of Object.keys(frequencies)) {
+                if (equityCheckFunc(key, knownKey)) {
+                    key = knownKey;
+                    break;
+                }
+            }
+        }
         
         if (!!frequencies[key]) {
             frequencies[key].count++;
@@ -58,7 +87,6 @@ function getMode(elements, keyFunc=identity, exclude=NOEXCLUDE) {
             maxFreqKey = key;
         }
     }
-    console.log(frequencies);
     
     return frequencies[maxFreqKey];
 }
@@ -69,7 +97,6 @@ function connectBoxes(boxes) {
     
     for (let box1 of boxes) {
         for (let box2 of boxes) {
-            console.log(box1, box2);
             if (box1 === box2) continue;
             //optimize for box1 -> box2 : box2 -> box1
             
@@ -88,8 +115,9 @@ function connectBoxes(boxes) {
         }
     }
     
-    console.log(getMode(allIntersects, intersectionKey, EXCLUDESLOPES));
-    
+    var mostCommonIntersectCount = getMode(allIntersects, intersectionKey, EXCLUDEINTERSECTCOUNT);
+    var mostCommonSlope = getMode(mostCommonIntersectCount.elements.map(x => x.slope), null, null, areApproximatelyEqual);
+    console.log(mostCommonSlope);
 }
 
 /*
