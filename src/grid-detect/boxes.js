@@ -32,52 +32,63 @@ class Line {
     }
 }
 
-function getMode(array) {
+function identity(x) { return x };
+const NOEXCLUDE = new Set();
+
+const EXCLUDESLOPES = new Set([0,1]);
+function intersectionKey(x) { return x.intersectCount };
+
+function getMode(elements, keyFunc=identity, exclude=NOEXCLUDE) {
     var frequencies = {};
     var maxFreq = 0;
-    var maxFreqElement = null;
+    var maxFreqKey = null;
     
-    for (var element of array) {
-        if (!!frequencies[element]) {
-            frequencies[element]++;
+    for (var element of elements) {
+       let key = keyFunc(element);
+        
+        if (!!frequencies[key]) {
+            frequencies[key].count++;
+            frequencies[key].elements.push(element);
         } else {
-            frequencies[element] = 1;   
+            frequencies[key] = {key: key, count: 1, elements: [element]};   
         }
         
-        if (frequencies[element] > maxFreq) {
-            maxFreq = frequencies[element];   
-            maxFreqElement = element;
+        if (frequencies[key].count > maxFreq && !exclude.has(key)) {
+            maxFreq = frequencies[key].count;   
+            maxFreqKey = key;
         }
     }
     console.log(frequencies);
     
-    return maxFreqElement;
-    
+    return frequencies[maxFreqKey];
 }
 
 function connectBoxes(boxes) {
     var lines = [];
     var allIntersects = [];
     
-    for (var box1 of boxes) {
-        for (var box2 of boxes) {
+    for (let box1 of boxes) {
+        for (let box2 of boxes) {
             console.log(box1, box2);
             if (box1 === box2) continue;
             //optimize for box1 -> box2 : box2 -> box1
             
-            var line = new Line(box1.max, box2.max).translateDown((box1.max.y - box1.min.y)/2);
+            let line = new Line(box1.max, box2.max).translateDown((box1.max.y - box1.min.y)/2);
             lines.push(line);
             
-            var thisBoxIntersects = [];
-            for (var box3 of boxes) {
-                if (line.intersectsBox(box3)) thisBoxIntersects.push(box3); 
+            let thisBoxIntersects = {slope: line.slope, intersectCount: 0, intersects: []};
+            for (let box3 of boxes) {
+                if (line.intersectsBox(box3)) {
+                    thisBoxIntersects.intersects.push(box3);
+                    thisBoxIntersects.intersectCount++;
+                }
             }
             
             allIntersects.push(thisBoxIntersects);
         }
     }
     
-    console.log(getMode(allIntersects, byArrayLength));
+    console.log(getMode(allIntersects, intersectionKey, EXCLUDESLOPES));
     
 }
 
