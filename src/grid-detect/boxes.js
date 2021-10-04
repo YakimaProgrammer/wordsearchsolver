@@ -85,7 +85,7 @@ function getMode(elements, keyFunc, exclude, equityCheckFunc) {
 
 function connectBoxes(boxes) {
     var lines = [];
-    var allIntersects = [];
+    var allIntersects = {};
     
     for (let box1 of boxes) {
         for (let box2 of boxes) {
@@ -95,20 +95,23 @@ function connectBoxes(boxes) {
             let line = new Line(box1.max, box2.max).translateDown((box1.max.y - box1.min.y)/2);
             lines.push(line);
             
-            let thisBoxIntersects = {slope: line.slope, intersectCount: 0, intersects: []};
-            for (let box3 of boxes) {
-                if (line.intersectsBox(box3)) {
-                    thisBoxIntersects.intersects.push(box3);
-                    thisBoxIntersects.intersectCount++;
-                }
+            if (line.slope in allIntersects) {
+                allIntersects[line.slope].lines.push(line);
+            } else {
+                allIntersects[line.slope] = {lines: [line], intersectCount: 0, intersects: []};
             }
             
-            allIntersects.push(thisBoxIntersects);
+            for (let box3 of boxes) {
+                if (line.intersectsBox(box3)) {
+                    allIntersects[line.slope].intersects.push(box3);
+                    allIntersects[line.slope].intersectCount++;
+                }
+            }
         }
     }
     
-    var mostCommonIntersectCount = getMode(allIntersects, intersectionKey, EXCLUDEINTERSECTCOUNT);
-    var mostCommonSlope = getMode(mostCommonIntersectCount.elements.map(x => x.slope), null, null, areApproximatelyEqual);
+    var mostCommonIntersectCount = getMode(Object.values(allIntersects), intersectionKey, EXCLUDEINTERSECTCOUNT);
+    var mostCommonSlope = getMode(mostCommonIntersectCount.elements.map(x => x.lines).flat().map(x => x.slope), null, null, areApproximatelyEqual);
     console.log(mostCommonSlope);
 }
 
